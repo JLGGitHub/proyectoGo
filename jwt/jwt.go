@@ -12,6 +12,7 @@ func GenerarTokenJwt(t models.Usuario) (string, error) {
 
 	payload := jwt.MapClaims{
 		"email":     t.Email,
+		"_id":       t.Id.Hex(),
 		"nombre":    t.Nombre,
 		"apellidos": t.Apellidos,
 		"exp":       time.Now().Add(time.Hour * 1).Unix(),

@@ -47,3 +47,40 @@ func Insertar(item models.Usuario) (string, bool, error) {
 	}
 	return "", true, nil
 }
+
+func Modificar(item models.Usuario, Id string) (bool, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	fmt.Printf("****** %v ", Id)
+	defer cancel()
+	db := MongoConexion.Database("twiter")
+	col := db.Collection("usuarios")
+
+	registro := make(map[string]interface{}, 0)
+
+	if len(item.Nombre) > 0 {
+		registro["nombre"] = item.Nombre
+	}
+	if len(item.Apellidos) > 0 {
+		registro["apellidos"] = item.Apellidos
+	}
+	if len(item.Email) > 0 {
+		registro["email"] = item.Email
+	}
+	if len(item.Pass) > 0 {
+		registro["pass"] = item.Pass
+	}
+
+	updateString := bson.M{
+		"$set": registro,
+	}
+
+	objId, _ := primitive.ObjectIDFromHex(Id)
+
+	filtro := bson.M{"_id": bson.M{"$eq": objId}}
+
+	_, err := col.UpdateOne(ctx, filtro, updateString)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}

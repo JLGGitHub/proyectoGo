@@ -4,6 +4,7 @@ import (
 	"ejercicios/cursoUdemy/infraestructura"
 	"ejercicios/cursoUdemy/models"
 	"errors"
+	"fmt"
 	"strings"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -27,6 +28,7 @@ func ProcesoToken(tk string) (*models.Claim, bool, string, error) {
 	})
 	if err == nil {
 		// http.Error(w, err.Error(), 400)
+		fmt.Println(claims)
 		_, encontrado, _ := infraestructura.ChequeoYaExisteUsuario(claims.Email)
 		if encontrado {
 
